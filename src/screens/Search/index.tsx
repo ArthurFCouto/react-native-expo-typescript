@@ -63,7 +63,7 @@ export default function Products() {
                         <LabelFilter>Itens por página: -</LabelFilter>
                         <LabelFilter>Página atual: -</LabelFilter>
                     </AreaLabelFilter>
-                    <TouchableOpacity onPress={()=> setMessageAlert('Ainda indisponível.', 'primary')}>
+                    <TouchableOpacity onPress={()=> setMessageAlert('Ainda não implementado', 'warning')}>
                         <Ionicons
                             name='filter'
                             size={24}

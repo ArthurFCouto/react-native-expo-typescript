@@ -33,7 +33,6 @@ export const CardSearchCode = styled.Text`
 
 export const ContainerCardPrices = styled.TouchableOpacity`
     flex-direction: row;
-    justify-content: stretch;
     position: relative;
     background-color: ${(props) => props.theme.colors.bgTabBar};
     border-radius: 8px;
@@ -48,9 +47,9 @@ export const CardPriceColumnLeft = styled.View`
 `;
 
 export const CardPriceColumnCenter = styled.View`
-    width: 60%;
     justify-content: space-between;
     padding: 0px 10px;
+    width: 55%;
 `;
 
 export const CardPriceLabelNameMarket = styled.Text`
@@ -66,13 +65,14 @@ export const CardPriceLabelUpdate = styled(CardPriceLabelNameMarket)`
 `;
 
 export const CardPriceColumnRight = styled.View`
-    width: 25%;
+    width: 30%;
     justify-content: center;
     padding: 0px 10px;
 `;
 
-export const CardPriceLabelPrice = styled(CardPriceLabelNameMarket)`
-    font-size: 22px;
+export const CardPriceLabelPrice = styled.Text<{ index: number }>`
+    color: ${(props) => props.theme.colors.primary};
+    font-size: ${(props) => props.index === 0 ? '20px' : '18px'};
     font-weight: bold;
     text-align: right;
 `;

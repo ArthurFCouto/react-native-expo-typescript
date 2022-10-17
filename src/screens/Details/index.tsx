@@ -6,13 +6,13 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { useAlert } from '../../context/alert';
+import { useAppContext } from '../../context/appContext';
 import { Product } from '../../service/ProductApi';
 import PriceApi, { Price } from '../../service/PriceApi';
 import { CardPrices } from '../../components/Cards';
 import { PriceSubmit } from '../../components/PriceSubmit';
 import AdditionalInformation from './AdditionalInformation';
 import { AreaDetails, AreaImage, Brand, ButtonBack, ButtonImageViewer, ButtonLike, ContainerButtonPrice, ContainerDetails, HeaderPrices, LabelButtonPrice, LabelListPrice, LabelUpdate, LineRowBetween, Name } from './styles';
-import { useAppContext } from '../../context/appContext';
 
 export default function Details() {
     const router = useRoute<RouteProp<RouterPropsParams>>();
@@ -25,6 +25,7 @@ export default function Details() {
     const [showImageViewer, setShowImageViewer] = useState<boolean>(false);
     const [showPriceSubmit, setShowPriceSubmit] = useState<boolean>(false);
     const [listPrice, setListPrice] = useState<Array<Price>>([]);
+    const [priceMedium, setPriceMedium] = useState<string>('0.00');
     const product = router.params?.product as Product;
     const { atualizadoEm, codigoProduto, descricaoProduto, imagemProduto, marcaProduto } = product;
     const image = [{ url: imagemProduto || '' }];
@@ -58,6 +59,13 @@ export default function Details() {
         }
         requestPrice();
     }, []);
+
+    useEffect(() => {
+        if (listPrice.length > 0) {
+            const sum = listPrice.reduce((total: number, price: Price) => { return total + parseFloat(price.precoAtual) }, 0);
+            setPriceMedium((sum / listPrice.length).toFixed(2));
+        }
+    }, [listPrice]);
 
     return (
         <ContainerDetails
@@ -113,7 +121,10 @@ export default function Details() {
                         {'#' + codigoProduto}
                     </LabelUpdate>
                 </LineRowBetween>
-                <AdditionalInformation product={product} />
+                <AdditionalInformation
+                    priceMedium={priceMedium}
+                    product={product}
+                />
                 <ButtonPrice />
                 <HeaderPrices>
                     <LineRowBetween>
@@ -134,11 +145,11 @@ export default function Details() {
                 </HeaderPrices>
                 {
                     listPrice.length > 0 &&
-                    listPrice.sort((prevPrice, nextPrice)=> prevPrice.precoAtual > nextPrice.precoAtual ? 1 : -1).map((price: Price, index: number) =>
+                    listPrice.sort((previus, next) => { return previus.precoAtual > next.precoAtual ? 1 : -1 }).map((price: Price, index: number) =>
                         <CardPrices
-                            key={index}
-                            product={product}
+                            index={index}
                             price={price}
+                            product={product}
                         />
                     )
                 }
@@ -169,7 +180,6 @@ export default function Details() {
                     onClose={() => setShowPriceSubmit(false)}
                 />
             </Modal>
-            <StatusBar style={'dark'} />
         </ContainerDetails>
     )
 }

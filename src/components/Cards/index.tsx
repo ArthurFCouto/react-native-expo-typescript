@@ -12,14 +12,12 @@ interface CardSearchProps {
     product: Product,
 }
 
-interface CardPriceProps {
-    product: Product,
+interface CardPriceProps extends CardSearchProps {
     price: Price
 }
 
 export function CardSearch(props: CardSearchProps) {
     const navigator = useNavigation<NavigationProp<RouterPropsParams>>();
-    const theme = useTheme();
     const { index, product } = props;
     const { codigoProduto, descricaoProduto, imagemProduto, marcaProduto } = product;
 
@@ -59,12 +57,14 @@ export function CardSearch(props: CardSearchProps) {
 export function CardPrices(props: CardPriceProps) {
     const theme = useTheme();
     const { setMessageAlert } = useAlert();
-    const { price, product: { imagemProduto } } = props;
-    const { atualizadoEm, emailUsuario, mercado, precoAtual } = price;
+    const { index, price, product: { imagemProduto } } = props;
+    const { atualizadoEm, emailUsuario, mercado: { cidadeMercado, enderecoMercado, nomeMercado, telefoneMercado }, precoAtual } = price;
     return (
         <ContainerCardPrices
-        activeOpacity={0.75}
-        onLongPress={()=> setMessageAlert(`R$ ${precoAtual} em ${mercado.nomeMercado} - ${mercado.enderecoMercado} ${mercado.cidadeMercado}`, 'primary')}
+            activeOpacity={0.75}
+            key={index}
+            onLongPress={() => setMessageAlert(`R$ ${precoAtual} em ${nomeMercado}\n${enderecoMercado} ${cidadeMercado}\n${telefoneMercado}`, 'primary')}
+            style={getShadowProps()}
         >
             <CardPriceColumnLeft>
                 <Image
@@ -79,7 +79,7 @@ export function CardPrices(props: CardPriceProps) {
                     numberOfLines={1}
                     ellipsizeMode={'tail'}
                 >
-                    {mercado.nomeMercado}
+                    {nomeMercado}
                 </CardPriceLabelNameMarket>
                 <View>
                     <Text
@@ -98,6 +98,7 @@ export function CardPrices(props: CardPriceProps) {
                 <CardPriceLabelPrice
                     numberOfLines={1}
                     ellipsizeMode={'tail'}
+                    index={index}
                 >
                     {'R$ ' + precoAtual}
                 </CardPriceLabelPrice>

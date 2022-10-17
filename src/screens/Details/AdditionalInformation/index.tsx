@@ -6,13 +6,14 @@ import { Product } from '../../../service/ProductApi';
 import { ColumnLeft, ColumnRight, ContainerAddInformation, HeaderAddInformation, LabelAddInformation, LabelLeft, LabelRight, LabelRightDetails, Line } from './styles';
 
 interface PropsAdditionalInformation {
+    priceMedium: string;
     product: Product;
 }
 
 export default function AdditionalInformation(props: PropsAdditionalInformation) {
     const theme = useTheme();
     const [showContainer, setShowContainer] = useState<boolean>(false);
-    const { product: { categoriaProduto, detalheProduto, precoMedioNacional } } = props;
+    const { priceMedium, product: { categoriaProduto, detalheProduto, precoMedioNacional } } = props;
 
     return (
         <ContainerAddInformation>
@@ -50,7 +51,7 @@ export default function AdditionalInformation(props: PropsAdditionalInformation)
                             </ColumnLeft>
                             <ColumnRight>
                                 <LabelRight>
-                                    Não implementado
+                                    {'R$ ' + priceMedium}
                                 </LabelRight>
                             </ColumnRight>
                         </Line>
