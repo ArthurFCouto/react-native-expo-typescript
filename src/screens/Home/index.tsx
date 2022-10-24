@@ -1,21 +1,27 @@
 import { useState } from 'react';
-import { ActivityIndicator, Keyboard, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import {
+    ActivityIndicator, Keyboard, Modal,
+    StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View
+} from 'react-native';
 import { NavigationProp, RouterPropsParams, useNavigation } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useAlert } from '../../context/alert';
+import ButtonCustom from '../../components/ButtonCustom';
+import { InputSearch } from '../../components/InputCustom';
 import Scanner from '../../components/Scanner';
-import InputCustom from '../../components/InputCustom';
-import { handleScanner, handleSearch } from './functions';
-import { SubTitle, Title, ViewInput } from './styles';
+import { SubTitle, Title } from '../../components/Styles';
+import HomeFunctions from './functions';
+import { ViewInput, ViewScanner } from './styles';
 
 export default function Home() {
-    const navigator = useNavigation<NavigationProp<RouterPropsParams>>();
     const theme = useTheme();
+    const navigator = useNavigation<NavigationProp<RouterPropsParams>>();
+    const { setMessageAlert } = useAlert();
     const [showScanner, setShowScanner] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const { setMessageAlert } = useAlert();
+    const functions = new HomeFunctions(navigator, setLoading, setMessageAlert);
 
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -23,15 +29,23 @@ export default function Home() {
                 colors={[theme.colors.bgPrimary, theme.colors.bgSecondary]}
                 style={styles.containerLinearGradient}
             >
-                <Title>Quanto Tá?</Title>
-                <SubTitle>Saiba o preço dos produtos antes de sair de casa</SubTitle>
+                <Title>É Quanto?</Title>
+                <SubTitle>Faça cotações de preços em mercados sem sair de casa</SubTitle>
                 <ViewInput>
-                    <InputCustom
+                    <InputSearch
                         placeholder='Digite um nome ou código'
-                        submit={(text) => handleSearch(text, navigator, setLoading, setMessageAlert)}
+                        submit={(text) => functions.handleSearch(text)}
                     />
+                    <TouchableOpacity onPress={() => setShowScanner(true)}>
+                        <Ionicons
+                            color={theme.colors.button}
+                            name='ios-barcode-outline'
+                            size={36}
+                            style={styles.barcode}
+                        />
+                    </TouchableOpacity>
                 </ViewInput>
-                <View style={styles.viewScanner}>
+                <ViewScanner>
                     {
                         loading ?
                             (
@@ -41,27 +55,32 @@ export default function Home() {
                                     style={styles.activityIndicator}
                                 />
                             ) : (
-                                <TouchableOpacity onPress={() => setShowScanner(true)}>
-                                    <Ionicons
-                                        color={theme.colors.button}
-                                        name='ios-barcode-outline'
-                                        size={36}
-                                        style={styles.icon}
+                                <View>
+                                    <ButtonCustom
+                                        icon='ios-list-circle-outline'
+                                        onPress={() => functions.handleSearch('*')}
+                                        space={true}
+                                        style={styles.buttons}
+                                        title='Listar todos'
                                     />
-                                    <Text style={{ color: theme.colors.button }}>
-                                        Ler código de barras
-                                    </Text>
-                                </TouchableOpacity>
+                                    <ButtonCustom
+                                        icon='heart-outline'
+                                        onPress={() => setMessageAlert('Ainda não implementado', 'warning')}
+                                        space={true}
+                                        style={styles.buttons}
+                                        title='Favoritos'
+                                    />
+                                </View>
                             )
                     }
-                </View>
+                </ViewScanner>
                 <Modal
                     animationType='slide'
                     transparent
                     visible={showScanner}
                 >
                     <Scanner
-                        action={(code) => handleScanner(code, navigator, setLoading, setMessageAlert)}
+                        action={(code) => functions.handleScanner(code)}
                         onClose={() => setShowScanner(false)}
                     />
                 </Modal>
@@ -74,16 +93,17 @@ const styles = StyleSheet.create({
     activityIndicator: {
         marginTop: 15,
     },
+    barcode: {
+        marginLeft: 5,
+    },
+    buttons: {
+        marginVertical: 10,
+        maxWidth: '50%',
+    },
     containerLinearGradient: {
         flex: 1,
-        padding: 8,
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 8,
     },
-    icon: {
-        textAlign: 'center',
-    },
-    viewScanner: {
-        alignItems: 'center',
-    }
 });

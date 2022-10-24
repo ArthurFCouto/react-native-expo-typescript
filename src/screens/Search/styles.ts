@@ -9,20 +9,11 @@ export const ContainerSearch = styled.View`
 export const AreaFilter = styled.View`
     align-items: center;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     background-color: ${(props) => props.theme.colors.bgTabBar};
     border-radius: 8px;
+    margin-bottom: 10px;
     padding: 15px 8px;
-`;
-
-export const AreaLabelFilter = styled.View`
-    flex-direction: row;
-    justify-content: space-around;
-`;
-
-export const LabelFilter = styled.Text`
-    color: ${(props) => props.theme.colors.primary};
-    margin-right: 10px;
 `;
 
 export const AreaAnimation = styled.View`
@@ -34,7 +25,7 @@ export const AreaAnimation = styled.View`
 export const ContainerComponentEmpty = styled.View`
     flex: 1;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     padding: 8px;
 `;
 

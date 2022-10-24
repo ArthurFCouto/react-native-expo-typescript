@@ -1,39 +1,54 @@
 import { Keyboard } from 'react-native';
-import ProductApi, { Product, ProductError, ProductObjectResponse } from '../../service/ProductApi';
-import { isConnected } from '../../util';
+import ProductApi, { ProductError, ProductObjectResponse } from '../../service/ProductApi';
+import { codeIsEAN, isConnected } from '../../util';
 
-export function instanceOfProductError(data: any): data is ProductError {
-    return 'error' in data;
-}
+export default class SearchFunctions {
 
-function handleProductApi(data: ProductObjectResponse | ProductError, setProductList: React.Dispatch<React.SetStateAction<Array<any>>>, setMessageAlert: Function) {
-    if (!data)
-        return setMessageAlert('Ops! Tivemos um problema de conexão. Tente mais tarde!', 'danger');
-    if (instanceOfProductError(data)) {
-        setProductList([]);
-        return setMessageAlert(`Erro durante a busca: ${data.error}`, 'danger');
+    private _data: ProductObjectResponse | ProductError | undefined;
+    private _setLoading: Function;
+    private _setMessageAlert: Function;
+    private _setProductList: Function;
+
+    constructor(setLoading: Function, setMessageAlert: Function, setProductList: Function) {
+        this._data = undefined;
+        this._setLoading = setLoading;
+        this._setMessageAlert = setMessageAlert;
+        this._setProductList = setProductList;
     }
-    setProductList(data.listaProduto);
-}
 
-export async function getAllProduct(setLoading: React.Dispatch<React.SetStateAction<boolean>>, setProductList: React.Dispatch<React.SetStateAction<Array<Product>>>, setMessageAlert: Function) {
-    Keyboard.dismiss();
-    if (!(await isConnected()))
-        return setMessageAlert('Aparelho sem conexão no momento!', 'danger');
-    setLoading(true);
-    const data = await ProductApi.findAll();
-    setLoading(false);
-    return handleProductApi(data, setProductList, setMessageAlert);
-}
+    private _handleProductApi() {
+        if (!this._data)
+            return this._setMessageAlert('Ops! Tivemos um problema de conexão. Tente mais tarde!', 'danger');
+        if (this.instanceOfProductError(this._data)) {
+            this._setProductList([]);
+            return this._setMessageAlert(`Erro durante a busca: ${this._data.error}`, 'danger');
+        }
+        return this._data.listaProduto ? this._setProductList(this._data.listaProduto) : this._setProductList([this._data]);
+    }
 
-export async function getProductByName(setLoading: React.Dispatch<React.SetStateAction<boolean>>, setProductList: React.Dispatch<React.SetStateAction<Array<Product>>>, setMessageAlert: Function, description: string) {
-    Keyboard.dismiss();
-    if (!(await isConnected()))
-        return setMessageAlert('Aparelho sem conexão no momento!', 'danger');
-    if (!description || description.trim().length === 0)
-        return setMessageAlert('Digite algo para pesquisar!', 'warning');
-    setLoading(true);
-    const data = await ProductApi.findByName(description);
-    setLoading(false);
-    return handleProductApi(data, setProductList, setMessageAlert);
+    async getAllProduct() {
+        Keyboard.dismiss();
+        if (!(await isConnected()))
+            return this._setMessageAlert('Aparelho sem conexão no momento!', 'danger');
+        this._setLoading(true);
+        this._data = await ProductApi.findAll();
+        this._setLoading(false);
+        return this._handleProductApi();
+    }
+
+    async getProductByName(description: string) {
+        Keyboard.dismiss();
+        if (!(await isConnected()))
+            return this._setMessageAlert('Aparelho sem conexão no momento!', 'danger');
+        if (!description || description.trim().length === 0 || description === '*')
+            return this.getAllProduct();
+        this._setLoading(true);
+        codeIsEAN(description) ? this._data = await ProductApi.findByCode(description) : this._data = await ProductApi.findByName(description);
+        this._setLoading(false);
+        return this._handleProductApi();
+    }
+
+    instanceOfProductError(data: any): data is ProductError {
+        return 'error' in data;
+    }
 }

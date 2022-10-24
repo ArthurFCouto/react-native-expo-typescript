@@ -1,25 +1,32 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button, FlatList, Keyboard, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import {
+    FlatList, Keyboard, StyleSheet,
+    Text, TouchableOpacity, TouchableWithoutFeedback
+} from 'react-native';
 import { RouteProp, RouterPropsParams, useRoute } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
 import { useAlert } from '../../context/alert';
-import { CardSearch } from '../../components/Cards';
 import { Product } from '../../service/ProductApi';
 import lottieFiles from '../../assets/lottie';
+import { CardSearch } from '../../components/Cards';
+import ButtonCustom from '../../components/ButtonCustom';
 import HeaderSearch from './HeaderSearch';
-import { getAllProduct, getProductByName } from './functions';
-import { AreaAnimation, AreaFilter, AreaLabelFilter, ContainerComponentEmpty, ContainerSearch, LabelEmpty, LabelFilter } from './styles';
+import SearchFunctions from './functions';
+import {
+    AreaAnimation, AreaFilter, ContainerComponentEmpty,
+    ContainerSearch, LabelEmpty
+} from './styles';
 
 export default function Products() {
     const router = useRoute<RouteProp<RouterPropsParams>>();
     const theme = useTheme();
-    const animation = useRef<LottieView>(null);
     const { setMessageAlert } = useAlert();
     const [nameSearch, setNameSearch] = useState<string>(router.params !== null ? String(router.params.nameSearch) : '');
     const [loading, setLoading] = useState<boolean>(false);
     const [productList, setProductList] = useState<Array<Product>>([]);
+    const functions = new SearchFunctions(setLoading, setMessageAlert, setProductList);
 
     const ComponentSeparator: React.FC = () => (
         <TouchableWithoutFeedback>
@@ -33,22 +40,27 @@ export default function Products() {
         return (
             <ContainerComponentEmpty>
                 <LabelEmpty>Sem resultados</LabelEmpty>
-                <LottieView
-                    loop={false}
-                    ref={animationEmpty}
-                    style={{ width: '50%' }}
-                    source={lottieFiles.notFound}
-                />
-                <Button
-                    title='Listar Cadastrados'
-                    onPress={() => getAllProduct(setLoading, setProductList, setMessageAlert)}
+                <TouchableWithoutFeedback onPress={() => animationEmpty.current?.play(0, 100)}>
+                    <LottieView
+                        autoPlay={false}
+                        loop={false}
+                        ref={animationEmpty}
+                        style={{ width: '50%' }}
+                        source={lottieFiles.notFound}
+                    />
+                </TouchableWithoutFeedback>
+                <ButtonCustom
+                    onPress={() => setNameSearch('')}
+                    style={{ width: '100%' }}
+                    title='Listar todos'
+                    icon='ios-list-circle-outline'
                 />
             </ContainerComponentEmpty>
         )
     }
 
     useEffect(() => {
-        getProductByName(setLoading, setProductList, setMessageAlert, nameSearch);
+        functions.getProductByName(nameSearch);
     }, [nameSearch]);
 
     return (
@@ -59,11 +71,7 @@ export default function Products() {
                     setNameSearch={(text) => setNameSearch(text)}
                 />
                 <AreaFilter>
-                    <AreaLabelFilter>
-                        <LabelFilter>Itens por página: -</LabelFilter>
-                        <LabelFilter>Página atual: -</LabelFilter>
-                    </AreaLabelFilter>
-                    <TouchableOpacity onPress={()=> setMessageAlert('Ainda não implementado', 'warning')}>
+                    <TouchableOpacity onPress={() => setMessageAlert('Ainda não implementado', 'warning')}>
                         <Ionicons
                             name='filter'
                             size={24}
@@ -76,7 +84,6 @@ export default function Products() {
                         <AreaAnimation>
                             <LottieView
                                 autoPlay
-                                ref={animation}
                                 style={styles.lottie}
                                 source={lottieFiles.search}
                             />
@@ -103,7 +110,6 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     list: {
-        flex: 1,
         paddingVertical: 15,
     },
 });

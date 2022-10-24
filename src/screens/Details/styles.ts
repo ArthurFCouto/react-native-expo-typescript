@@ -27,7 +27,7 @@ export const ButtonImageViewer = styled(ButtonLike)`
 
 export const AreaImage = styled.TouchableOpacity`
     position: relative;
-    height: ${height / 2 + 'px'};
+    height: ${(height / 2) - 15 + 'px'};
     background-color: #FFFFFF;
     padding-top: 15px;
     overflow: hidden;
@@ -40,6 +40,8 @@ export const Brand = styled.Text`
     color: ${(props) => props.theme.colors.gray};
     font-size: 24px;
     font-weight: 600;
+    text-transform: uppercase;
+    max-width: 50%;
 `;
 
 export const AreaDetails = styled.View`
@@ -53,7 +55,7 @@ export const Name = styled.Text`
     margin: 10px 0px;
 `;
 
-export const LineRowBetween = styled.View`
+export const LineBetween = styled.View`
     align-items: center;
     flex-direction: row;
     justify-content: space-between;
@@ -65,7 +67,7 @@ export const LabelUpdate = styled.Text`
 `;
 
 export const HeaderPrices = styled.View`
-    background-color: ${(props)=> props.theme.colors.bgTabBar};
+    background-color: ${(props) => props.theme.colors.bgTabBar};
     border-radius: 8px;
     padding: 20px 5px;
     margin: 5px 0px;
@@ -84,6 +86,10 @@ export const ContainerButtonPrice = styled.TouchableOpacity`
 export const LabelListPrice = styled.Text`
     color: ${(props) => props.theme.colors.primary};
     font-size: 18px;
+`;
+
+export const LabelListCount = styled(LabelListPrice)`
+    padding-right: 10px;
 `;
 
 export const LabelButtonPrice = styled.Text`

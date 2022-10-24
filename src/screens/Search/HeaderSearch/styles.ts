@@ -1,13 +1,16 @@
 import styled from 'styled-components/native';
+import { Title } from '../../../components/Styles';
 
 export const ContainerHeaderSearch = styled.View`
     margin: 15px 0px;
 `;
 
-export const TitleSearch = styled.Text`
-    color: ${(props) => props.theme.colors.primary};
-    font-size: 36px;
-    font-weight: bold;
+export const AreaInputSearch = styled.View`
+    flex-direction: row;
+    align-items: center;
+`;
+
+export const TitleSearch = styled(Title)`
     margin: 15px 0px;
 `;
 

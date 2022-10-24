@@ -1,21 +1,22 @@
 import { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { useTheme } from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { ContainerInput, Input } from './styles';
 
-interface InputCustomProps {
-    placeholder: string,
-    submit: (text: string) => void
+interface InputSearchProps {
+    placeholder: string;
+    style?: StyleProp<ViewStyle>;
+    submit: (text: string) => void;
 }
 
-export default function InputCustom(props: InputCustomProps) {
-    const { placeholder, submit } = props;
+export function InputSearch(props: InputSearchProps) {
+    const { placeholder, style, submit } = props;
     const theme = useTheme();
     const [valueText, setValueText] = useState<string>('');
 
     return (
-        <ContainerInput>
+        <ContainerInput style={style}>
             <Input
                 multiline={false}
                 placeholder={placeholder}
@@ -24,27 +25,22 @@ export default function InputCustom(props: InputCustomProps) {
                 onSubmitEditing={() => submit(valueText)}
                 returnKeyType={'search'}
             />
-            <View style={styles.buttonArea}>
-                <TouchableOpacity
-                    onPress={() => submit(valueText)}
-                    style={styles.buttons}
-                >
-                    <Ionicons
-                        color={theme.colors.button}
-                        name='ios-search'
-                        size={24}
-                    />
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+                onPress={() => submit(valueText)}
+                style={styles.button}
+            >
+                <Ionicons
+                    color={theme.colors.button}
+                    name='ios-search'
+                    size={24}
+                />
+            </TouchableOpacity>
         </ContainerInput>
     )
 }
 
 const styles = StyleSheet.create({
-    buttonArea: {
-        flexDirection: 'row'
-    },
-    buttons: {
+    button: {
         marginHorizontal: 5
     }
 })

@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+    ActivityIndicator, KeyboardAvoidingView, Platform,
+    StyleSheet, TouchableOpacity
+} from 'react-native';
 import { useTheme } from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppContext } from '../../context/appContext';
@@ -7,7 +10,11 @@ import { useAlert } from '../../context/alert';
 import MarketApi from '../../service/MarketApi';
 import SelectCustom from '../SelectCustom';
 import PriceApi from '../../service/PriceApi';
-import { AreaButton, AreaInputPrice, ContainerButton, ContainerPriceSubmit, LabelButton, LabelMarket, LabelPrice } from './styles';
+import {
+    AreaButton, AreaInputPrice, ContainerButton,
+    ContainerPriceSubmit, LabelButton, LabelMarket,
+    LabelPrice
+} from './styles';
 import { TextInputMask } from 'react-native-masked-text';
 
 interface PriceSubmitProps {
@@ -20,7 +27,7 @@ export function PriceSubmit(props: PriceSubmitProps) {
     const { user: { token } } = useAppContext();
     const theme = useTheme();
     const { setMessageAlert } = useAlert();
-    const [price, setPrice] = useState<string>('0,00');
+    const [price, setPrice] = useState<string>('');
     const [loadingMarket, setLoadingMarket] = useState<boolean>(true);
     const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
     const [listMarket, setListMarket] = useState<Array<any>>([]);
@@ -62,12 +69,12 @@ export function PriceSubmit(props: PriceSubmitProps) {
 
     return (
         <TouchableOpacity
-        onPress={()=> onClose()}
-        activeOpacity={0}
-        style={{
-            backgroundColor: theme.colors.light+'50',
-            flex: 1
-        }}
+            onPress={() => onClose()}
+            activeOpacity={0}
+            style={{
+                backgroundColor: theme.colors.light + '50',
+                flex: 1
+            }}
         >
             <ContainerPriceSubmit>
                 <Ionicons
@@ -79,22 +86,27 @@ export function PriceSubmit(props: PriceSubmitProps) {
                 />
                 <AreaInputPrice>
                     <LabelPrice>Informe o preço</LabelPrice>
-                    <TextInputMask
-                        onChangeText={(text: string) => setPrice(text)}
-                        options={{
-                            unit: 'R$ ',
-                        }}
-                        style={styles.inputPrice}
-                        type={'money'}
-                        value={price}
-                    />
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'android' ? 'padding' : 'position'}
+                        enabled={true}
+                    >
+                        <TextInputMask
+                            onChangeText={(text: string) => setPrice(text)}
+                            options={{
+                                unit: 'R$ ',
+                            }}
+                            style={styles.inputPrice}
+                            type={'money'}
+                            value={price}
+                        />
+                    </KeyboardAvoidingView>
                 </AreaInputPrice>
                 <AreaInputPrice>
                     <LabelMarket>Selecionar Mercado</LabelMarket>
                     {
                         loadingMarket ?
                             (
-                                <ActivityIndicator />
+                                <ActivityIndicator color={theme.colors.primary} />
                             ) : (
                                 <SelectCustom
                                     list={listMarket}
@@ -110,7 +122,7 @@ export function PriceSubmit(props: PriceSubmitProps) {
                         {
                             loadingSubmit ?
                                 (
-                                    <ActivityIndicator />
+                                    <ActivityIndicator color={theme.colors.light} />
                                 ) : (
                                     <LabelButton>
                                         Enviar

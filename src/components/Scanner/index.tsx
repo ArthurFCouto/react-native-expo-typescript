@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
+import { useTheme } from 'styled-components';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { Ionicons } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
-import { BarCodeBox, BarCodeLabel, ContainerScanner, Message } from './styles';
 import lottieFiles from '../../assets/lottie';
-import { useTheme } from 'styled-components';
+import { BarCodeBox, BarCodeLabel, ContainerScanner, Message } from './styles';
 
 interface Payload {
     type: string,
@@ -19,7 +19,6 @@ interface ScannerProps {
 
 export default function Scanner(props: ScannerProps) {
     const { onClose, action } = props;
-    const animation = useRef(null);
     const theme = useTheme();
     const [hasPermission, setHasPermission] = useState<boolean>(true);
 
@@ -60,7 +59,6 @@ export default function Scanner(props: ScannerProps) {
                             hasPermission ? (
                                 <LottieView
                                     autoPlay
-                                    ref={animation}
                                     source={lottieFiles.scanner}
                                     style={{
                                         width: '100%',

@@ -1,20 +1,16 @@
 import styled from 'styled-components/native';
 
-export const Title = styled.Text`
-    color: ${(props) => props.theme.colors.primary};
-    font-size: 36px;
-    font-weight: bold;
-    margin: 5px;
-`;
-
-export const SubTitle = styled(Title)`
-    font-size: 24px;
-    font-weight: 400;
-    text-align: center;
-`;
-
 export const ViewInput = styled.View`
+    align-items: center;
+    flex-direction: row;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    margin: 20px 0px;
+    position: relative;
     width: 80%;
-    margin-top: 30px;
-    margin-bottom: 20px;
+`;
+
+export const ViewScanner = styled.View`
+    align-items: center;
+    width: 80%;
 `;

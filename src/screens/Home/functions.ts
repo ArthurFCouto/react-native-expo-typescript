@@ -1,31 +1,41 @@
-import React from 'react';
 import { Keyboard } from 'react-native';
 import { NavigationProp, RouterPropsParams } from '@react-navigation/native';
 import ProductApi from '../../service/ProductApi';
+import { codeIsEAN } from '../../util';
 
-const isEAN = (data: string) => {
-    const codeRegex = /\d{13}/g;
-    return codeRegex.test(data);
-}
+export default class HomeFunctions {
 
-export function handleSearch(data: string, navigator: NavigationProp<RouterPropsParams>, setLoading: React.Dispatch<React.SetStateAction<boolean>>, setMessageAlert: Function) {
-    Keyboard.dismiss();
-    if (isEAN(data))
-        return handleRedirectDetails(data, navigator, setLoading, setMessageAlert);
-    navigator.navigate('StackSearch', { nameSearch: data });
-}
+    private _navigator: NavigationProp<RouterPropsParams>;
+    private _setLoading: Function;
+    private _setMessageAlert: Function;
 
-export function handleScanner(code: string, navigator: NavigationProp<RouterPropsParams>, setLoading: React.Dispatch<React.SetStateAction<boolean>>, setMessageAlert: Function) {
-    if (!isEAN(code))
-        return setMessageAlert(`[${code}] Código inválido!`, 'danger');
-    handleRedirectDetails(code, navigator, setLoading, setMessageAlert);
-}
+    constructor(navigator: NavigationProp<RouterPropsParams>, setLoading: Function, setMessageAlert: Function) {
+        this._navigator = navigator;
+        this._setLoading = setLoading;
+        this._setMessageAlert = setMessageAlert;
+    }
 
-export async function handleRedirectDetails(code: string, navigator: NavigationProp<RouterPropsParams>, setLoading: React.Dispatch<React.SetStateAction<boolean>>, setMessageAlert: Function) {
-    setLoading(true);
-    const data = await ProductApi.findByCode(code);
-    setLoading(false);
-    if (data)
-        return data.error ? setMessageAlert(`[${code}] Produto não encontrado!`, 'danger') : navigator.navigate('StackDetails', { product: data });
-    setMessageAlert('Ops! Tivemos um problema de conexão. Tente mais tarde!', 'danger');
+    handleSearch(data: string) {
+        Keyboard.dismiss();
+        if (codeIsEAN(data))
+            return this._handleRedirectDetails(data);
+        if (!data || data.trim().length === 0)
+            return this._setMessageAlert('Digite algo para pesquisar!', 'warning');
+        this._navigator.navigate('StackSearch', { nameSearch: data });
+    }
+
+    handleScanner(code: string) {
+        if (!codeIsEAN(code))
+            return this._setMessageAlert(`[${code}] Código inválido!`, 'danger');
+        this._handleRedirectDetails(code);
+    }
+
+    private async _handleRedirectDetails(code: string) {
+        this._setLoading(true);
+        const data = await ProductApi.findByCode(code);
+        this._setLoading(false);
+        if (data)
+            return data.error ? this._setMessageAlert(`[${code}] Produto não encontrado!`, 'danger') : this._navigator.navigate('StackDetails', { product: data });
+        this._setMessageAlert('Ops! Tivemos um problema de conexão. Tente mais tarde!', 'danger');
+    }
 }

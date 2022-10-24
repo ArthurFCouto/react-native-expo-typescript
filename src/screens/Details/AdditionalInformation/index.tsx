@@ -1,9 +1,13 @@
-import { useState } from 'react';
-import { View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated } from 'react-native';
 import { useTheme } from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
 import { Product } from '../../../service/ProductApi';
-import { ColumnLeft, ColumnRight, ContainerAddInformation, HeaderAddInformation, LabelAddInformation, LabelLeft, LabelRight, LabelRightDetails, Line } from './styles';
+import {
+    ColumnLeft, ColumnRight, ContainerAddInformation,
+    HeaderAddInformation, LabelAddInformation, LabelLeft,
+    LabelRight, LabelRightDetails, Line
+} from './styles';
 
 interface PropsAdditionalInformation {
     priceMedium: string;
@@ -12,8 +16,17 @@ interface PropsAdditionalInformation {
 
 export default function AdditionalInformation(props: PropsAdditionalInformation) {
     const theme = useTheme();
+    const animateOpacity = useRef(new Animated.Value(0)).current;
     const [showContainer, setShowContainer] = useState<boolean>(false);
     const { priceMedium, product: { categoriaProduto, detalheProduto, precoMedioNacional } } = props;
+
+    useEffect(() => {
+        Animated.timing(animateOpacity, {
+            toValue: showContainer ? 1 : 0,
+            duration: 500,
+            useNativeDriver: true
+        }).start();
+    }, [showContainer]);
 
     return (
         <ContainerAddInformation>
@@ -25,14 +38,14 @@ export default function AdditionalInformation(props: PropsAdditionalInformation)
                     Informações adicionais
                 </LabelAddInformation>
                 <Ionicons
-                    name={showContainer ? 'remove-circle-sharp' : 'add-circle-sharp'}
+                    name={showContainer ? 'md-eye-off' : 'md-eye'}
                     size={18}
                     color={theme.colors.primary}
                 />
             </HeaderAddInformation>
             {
                 showContainer && (
-                    <View>
+                    <Animated.View style={{ opacity: animateOpacity }}>
                         <Line>
                             <ColumnLeft>
                                 <LabelLeft>Preço médio Nacional</LabelLeft>
@@ -81,7 +94,7 @@ export default function AdditionalInformation(props: PropsAdditionalInformation)
                                 </LabelRightDetails>
                             </ColumnRight>
                         </Line>
-                    </View>
+                    </Animated.View>
                 )
             }
         </ContainerAddInformation>

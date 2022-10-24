@@ -12,7 +12,17 @@ import PriceApi, { Price } from '../../service/PriceApi';
 import { CardPrices } from '../../components/Cards';
 import { PriceSubmit } from '../../components/PriceSubmit';
 import AdditionalInformation from './AdditionalInformation';
-import { AreaDetails, AreaImage, Brand, ButtonBack, ButtonImageViewer, ButtonLike, ContainerButtonPrice, ContainerDetails, HeaderPrices, LabelButtonPrice, LabelListPrice, LabelUpdate, LineRowBetween, Name } from './styles';
+import {
+    AreaDetails, AreaImage, Brand, ButtonBack,
+    ButtonImageViewer, ButtonLike, ContainerButtonPrice,
+    ContainerDetails, HeaderPrices, LabelButtonPrice,
+    LabelListCount,
+    LabelListPrice, LabelUpdate, LineBetween, Name
+} from './styles';
+
+/*
+ * Utilizar FlatList no lugar no .map
+ */
 
 export default function Details() {
     const router = useRoute<RouteProp<RouterPropsParams>>();
@@ -25,18 +35,10 @@ export default function Details() {
     const [showImageViewer, setShowImageViewer] = useState<boolean>(false);
     const [showPriceSubmit, setShowPriceSubmit] = useState<boolean>(false);
     const [listPrice, setListPrice] = useState<Array<Price>>([]);
-    const [priceMedium, setPriceMedium] = useState<string>('0.00');
+    const [priceMedium, setPriceMedium] = useState<string>('');
     const product = router.params?.product as Product;
     const { atualizadoEm, codigoProduto, descricaoProduto, imagemProduto, marcaProduto } = product;
     const image = [{ url: imagemProduto || '' }];
-
-    const handlePriceSubmit = () => {
-        if (loading)
-            return;
-        if (!user.logged)
-            return setMessageAlert('É preciso estar logado!', 'danger');
-        setShowPriceSubmit(true);
-    }
 
     const ButtonPrice: React.FC = () => (
         <ContainerButtonPrice
@@ -47,16 +49,25 @@ export default function Details() {
         </ContainerButtonPrice>
     )
 
+    const handlePriceSubmit = () => {
+        if (loading)
+            return;
+        if (!user.logged)
+            return setMessageAlert('É preciso estar logado!', 'danger');
+        setShowPriceSubmit(true);
+    }
+
+    const requestPrice = async () => {
+        setLoading(true);
+        const data = await PriceApi.findByCode(codigoProduto);
+        setLoading(false);
+        if (data)
+            return data.error ? setMessageAlert(`${data.error}`, 'danger') : setListPrice(data);
+        setListPrice([]);
+        setMessageAlert('Ops! Tivemos um problema de conexão. Tente mais tarde!', 'danger');
+    }
+
     useEffect(() => {
-        const requestPrice = async () => {
-            setLoading(true);
-            const data = await PriceApi.findByCode(codigoProduto);
-            setLoading(false);
-            if (data)
-                return data.error ? setMessageAlert(`${data.error}`, 'danger') : setListPrice(data);
-            setListPrice([]);
-            setMessageAlert('Ops! Tivemos um problema de conexão. Tente mais tarde!', 'danger');
-        }
         requestPrice();
     }, []);
 
@@ -109,29 +120,29 @@ export default function Details() {
                 <Name
                     ellipsizeMode='tail'
                     numberOfLines={2}
-                    onLongPress={() => setMessageAlert(`Nome completo: ${descricaoProduto}`, 'primary')}
+                    onPress={() => setMessageAlert(`Nome completo: ${descricaoProduto}`, 'primary')}
                 >
                     {descricaoProduto}
                 </Name>
-                <LineRowBetween>
+                <LineBetween>
                     <LabelUpdate>
                         Atualizado {atualizadoEm.substring(0, 10)}
                     </LabelUpdate>
                     <LabelUpdate onLongPress={() => setMessageAlert('Ainda não implementado', 'warning')}>
                         {'#' + codigoProduto}
                     </LabelUpdate>
-                </LineRowBetween>
+                </LineBetween>
                 <AdditionalInformation
                     priceMedium={priceMedium}
                     product={product}
                 />
                 <ButtonPrice />
                 <HeaderPrices>
-                    <LineRowBetween>
+                    <LineBetween>
                         <LabelListPrice>
                             Lista de Preços
                         </LabelListPrice>
-                        <LabelListPrice style={{ paddingRight: 10 }}>
+                        <LabelListCount>
                             {
                                 loading ? (
                                     <ActivityIndicator
@@ -140,8 +151,8 @@ export default function Details() {
                                     />
                                 ) : listPrice.length
                             }
-                        </LabelListPrice>
-                    </LineRowBetween>
+                        </LabelListCount>
+                    </LineBetween>
                 </HeaderPrices>
                 {
                     listPrice.length > 0 &&
@@ -149,7 +160,6 @@ export default function Details() {
                         <CardPrices
                             index={index}
                             price={price}
-                            product={product}
                         />
                     )
                 }

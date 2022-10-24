@@ -23,3 +23,8 @@ export function getShadowProps(): StyleProp<ViewStyle> {
         elevation: 3,
     }
 }
+
+export function codeIsEAN(data: string) {
+    const codeRegex = /\d{13}/g;
+    return codeRegex.test(data);
+}

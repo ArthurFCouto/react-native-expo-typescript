@@ -7,6 +7,7 @@ export const ContainerCardSearch = styled.TouchableOpacity`
     flex-direction: row;
     background-color: #FFFFFF;
     border-radius: 8px;
+    margin: 0px 5px;
     padding: 8px;
 `;
 
@@ -28,7 +29,13 @@ export const CardSearchBrand = styled.Text`
 
 export const CardSearchCode = styled.Text`
     color: ${(props) => props.theme.colors.gray};
-    text-align: right;
+    text-align: left;
+`;
+
+export const CardSearchFavorite = styled.TouchableOpacity`
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
 `;
 
 export const ContainerCardPrices = styled.TouchableOpacity`

@@ -50,7 +50,7 @@ export default function Routes() {
                     headerShown: false,
                     tabBarShowLabel: true,
                     tabBarLabelPosition: 'below-icon',
-                    tabBarHideOnKeyboard: true,
+                    tabBarHideOnKeyboard: false,
                     tabBarStyle: {
                         backgroundColor: theme.colors.bgTabBar
                     }
