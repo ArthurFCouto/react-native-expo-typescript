@@ -29,7 +29,14 @@ export default function Home() {
                 colors={[theme.colors.bgPrimary, theme.colors.bgSecondary]}
                 style={styles.containerLinearGradient}
             >
-                <Title>É Quanto?</Title>
+                <Ionicons
+                    color={theme.colors.button}
+                    name='heart'
+                    onPress={() => setMessageAlert('Ainda não implementado', 'warning')}
+                    size={32}
+                    style={styles.favorite}
+                />
+                <Title>Quanto tá?</Title>
                 <SubTitle>Faça cotações de preços em mercados sem sair de casa</SubTitle>
                 <ViewInput>
                     <InputSearch
@@ -55,22 +62,13 @@ export default function Home() {
                                     style={styles.activityIndicator}
                                 />
                             ) : (
-                                <View>
-                                    <ButtonCustom
-                                        icon='ios-list-circle-outline'
-                                        onPress={() => functions.handleSearch('*')}
-                                        space={true}
-                                        style={styles.buttons}
-                                        title='Listar todos'
-                                    />
-                                    <ButtonCustom
-                                        icon='heart-outline'
-                                        onPress={() => setMessageAlert('Ainda não implementado', 'warning')}
-                                        space={true}
-                                        style={styles.buttons}
-                                        title='Favoritos'
-                                    />
-                                </View>
+                                <ButtonCustom
+                                    icon='ios-list-circle-outline'
+                                    onPress={() => functions.handleSearch('*')}
+                                    space={true}
+                                    style={styles.buttons}
+                                    title='Listar todos'
+                                />
                             )
                     }
                 </ViewScanner>
@@ -105,5 +103,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 8,
+    },
+    favorite: {
+        position: 'absolute',
+        top: 20,
+        right: 8,
     },
 });

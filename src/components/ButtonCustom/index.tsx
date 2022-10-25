@@ -1,21 +1,23 @@
 import { Ionicons } from '@expo/vector-icons';
-import { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native';
+import { ActivityIndicator, StyleProp, ViewStyle } from 'react-native';
 import { useTheme } from 'styled-components';
 import { getShadowProps } from '../../util';
 import { LabelButton, TouchableButton } from './styles';
 
 interface ButtonCustomProps {
-    icon?: 'heart-outline' | 'ios-barcode-outline' | 'ios-list-circle-outline' | 'log-in';
-    onPress: ((event: GestureResponderEvent) => void);
+    icon?: 'heart-outline' | 'ios-barcode-outline' | 'ios-list-circle-outline' | 'log-in' | 'log-out';
+    loading?: boolean;
+    onPress: () => void;
     space?: boolean;
     style?: StyleProp<ViewStyle>;
     title: string;
+    transparent?: boolean;
 }
 
 export default function ButtonCustom(props: ButtonCustomProps) {
-    const { icon, onPress, space, style, title } = props;
+    const { icon, loading, onPress, space, style, title, transparent } = props;
     const theme = useTheme();
-    const shadow = getShadowProps();
+    const shadow = transparent ? {} : getShadowProps();
     const Icon = {
         'heart-outline':
             <Ionicons
@@ -41,19 +43,42 @@ export default function ButtonCustom(props: ButtonCustomProps) {
                 size={24}
                 color={theme.colors.light}
             />,
+        'log-out':
+            <Ionicons
+                name='log-out'
+                size={24}
+                color={theme.colors.light}
+            />,
+    }
+
+    const handleOnPress = () => {
+        if (loading)
+            return;
+        onPress();
+    }
+
+    const Label = () => {
+        if (loading)
+            return <ActivityIndicator color={theme.colors.light} size={24} />
+        return (
+            <>
+                <LabelButton isSpace={space}>{title}</LabelButton>
+                {
+                    icon && Icon[icon]
+                }
+            </>
+        )
     }
 
     return (
         <TouchableButton
             activeOpacity={0.5}
-            onPress={onPress}
+            onPress={handleOnPress}
             isSpace={space}
             style={[shadow, style]}
+            transparent={transparent}
         >
-            <LabelButton isSpace={space}>{title}</LabelButton>
-            {
-                icon && Icon[icon]
-            }
+            <Label />
         </TouchableButton>
     )
 }

@@ -1,10 +1,10 @@
 import styled from 'styled-components/native';
 
-export const TouchableButton = styled.TouchableOpacity<{ isSpace?: boolean }>`
+export const TouchableButton = styled.TouchableOpacity<{ isSpace?: boolean, transparent?: boolean}>`
     flex-direction: row;
     align-items: center;
     justify-content: ${(props) => props.isSpace ? 'space-between' : 'center'};
-    background-color: ${(props) => props.theme.colors.button};
+    background-color: ${(props) => props.transparent ? 'transparent' : props.theme.colors.button};
     border-radius: 8px;
     padding: 10px 15px;
 `;

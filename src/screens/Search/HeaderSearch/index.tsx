@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -24,7 +25,7 @@ export default function HeaderSearch(props: HeaderSearchProps) {
     return (
         <ContainerHeaderSearch>
             <TitleSearch onPress={() => navigator.goBack()}>
-                É Quanto?
+                Quanto tá?
             </TitleSearch>
             <AreaInputSearch>
                 <InputSearch
