@@ -83,6 +83,7 @@ export default function Account() {
                             placeholder='Email'
                             placeholderTextColor={theme.colors.gray}
                             returnKeyType={'next'}
+                            value={email}
                         />
                         <Ionicons
                             name='mail-outline'
@@ -100,13 +101,15 @@ export default function Account() {
                             placeholderTextColor={theme.colors.gray}
                             ref={passwordRef}
                             secureTextEntry={!showPassword}
+                            value={password}
                         />
-                        <Ionicons
-                            onPress={() => setShowPassword(!showPassword)}
-                            name={showPassword ? 'lock-open-outline' : 'lock-closed-outline'}
-                            size={18}
-                            color={theme.colors.gray}
-                        />
+                        <TouchableWithoutFeedback onPress={() => setShowPassword(!showPassword)}>
+                            <Ionicons
+                                name={showPassword ? 'lock-open-outline' : 'lock-closed-outline'}
+                                size={18}
+                                color={theme.colors.gray}
+                            />
+                        </TouchableWithoutFeedback>
                     </LineInput>
                 </AreaInput>
                 {

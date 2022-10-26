@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
     ActivityIndicator, Keyboard, Modal,
-    StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View
+    StyleSheet, TouchableOpacity, TouchableWithoutFeedback
 } from 'react-native';
 import { NavigationProp, RouterPropsParams, useNavigation } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
@@ -29,13 +29,16 @@ export default function Home() {
                 colors={[theme.colors.bgPrimary, theme.colors.bgSecondary]}
                 style={styles.containerLinearGradient}
             >
-                <Ionicons
-                    color={theme.colors.button}
-                    name='heart'
+                <TouchableOpacity
                     onPress={() => setMessageAlert('Ainda não implementado', 'warning')}
-                    size={32}
                     style={styles.favorite}
-                />
+                >
+                    <Ionicons
+                        color={theme.colors.button}
+                        name='heart'
+                        size={32}
+                    />
+                </TouchableOpacity>
                 <Title>Quanto tá?</Title>
                 <SubTitle>Faça cotações de preços em mercados sem sair de casa</SubTitle>
                 <ViewInput>

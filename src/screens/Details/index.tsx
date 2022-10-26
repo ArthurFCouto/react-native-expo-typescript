@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Modal, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, Image, Modal, Text, useWindowDimensions } from 'react-native';
 import { RouteProp, RouterPropsParams, useNavigation, useRoute } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
 import { StatusBar } from 'expo-status-bar';
@@ -16,8 +16,7 @@ import {
     AreaDetails, AreaImage, Brand, ButtonBack,
     ButtonImageViewer, ButtonLike, ContainerButtonPrice,
     ContainerDetails, HeaderPrices, LabelButtonPrice,
-    LabelListCount,
-    LabelListPrice, LabelUpdate, LineBetween, Name
+    LabelListCount, LabelListPrice, LabelUpdate, LineBetween, Name
 } from './styles';
 
 /*
@@ -154,11 +153,15 @@ export default function Details() {
                         </LabelListCount>
                     </LineBetween>
                 </HeaderPrices>
+                <Text style={{ color: theme.colors.primary, marginVertical: 10 }}>
+                    *Os preços são informados pelos usuários, eventualmente podem não condizer com a realidade.
+                </Text>
                 {
                     listPrice.length > 0 &&
                     listPrice.sort((previus, next) => { return previus.precoAtual > next.precoAtual ? 1 : -1 }).map((price: Price, index: number) =>
                         <CardPrices
                             index={index}
+                            key={index}
                             price={price}
                         />
                     )

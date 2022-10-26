@@ -9,8 +9,8 @@ export const TouchableButton = styled.TouchableOpacity<{ isSpace?: boolean, tran
     padding: 10px 15px;
 `;
 
-export const LabelButton = styled.Text<{ isSpace?: boolean }>`
-    color: ${(props) => props.theme.colors.light};
+export const LabelButton = styled.Text<{ isSpace?: boolean, transparent?: boolean }>`
+    color: ${(props) => props.transparent ? props.theme.colors.primary : props.theme.colors.light};
     font-size: 18px;
     margin-right:  ${(props) => props.isSpace ? '15px' : '0px'};
 `;

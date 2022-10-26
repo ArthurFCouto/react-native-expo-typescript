@@ -18,36 +18,37 @@ export default function ButtonCustom(props: ButtonCustomProps) {
     const { icon, loading, onPress, space, style, title, transparent } = props;
     const theme = useTheme();
     const shadow = transparent ? {} : getShadowProps();
+    const colorIcon = transparent ? theme.colors.primary : theme.colors.light;
     const Icon = {
         'heart-outline':
             <Ionicons
                 name='heart-outline'
                 size={24}
-                color={theme.colors.light}
+                color={colorIcon}
             />,
         'ios-barcode-outline':
             <Ionicons
                 name='ios-barcode-outline'
                 size={24}
-                color={theme.colors.light}
+                color={colorIcon}
             />,
         'ios-list-circle-outline':
             <Ionicons
                 name='ios-list-circle-outline'
                 size={24}
-                color={theme.colors.light}
+                color={colorIcon}
             />,
         'log-in':
             <Ionicons
                 name='log-in'
                 size={24}
-                color={theme.colors.light}
+                color={colorIcon}
             />,
         'log-out':
             <Ionicons
                 name='log-out'
                 size={24}
-                color={theme.colors.light}
+                color={colorIcon}
             />,
     }
 
@@ -62,7 +63,12 @@ export default function ButtonCustom(props: ButtonCustomProps) {
             return <ActivityIndicator color={theme.colors.light} size={24} />
         return (
             <>
-                <LabelButton isSpace={space}>{title}</LabelButton>
+                <LabelButton
+                    isSpace={space}
+                    transparent={transparent}
+                >
+                    {title}
+                </LabelButton>
                 {
                     icon && Icon[icon]
                 }
