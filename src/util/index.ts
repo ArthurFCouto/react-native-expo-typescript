@@ -1,5 +1,6 @@
 import { Platform, StyleProp, ViewStyle } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import { ErrorApi } from '../service/types';
 
 export async function isConnected() {
     return NetInfo.fetch().then(state => {
@@ -27,4 +28,8 @@ export function getShadowProps(): StyleProp<ViewStyle> {
 export function codeIsEAN(data: string) {
     const codeRegex = /\d{13}/g;
     return codeRegex.test(data);
+}
+
+export function instanceOfErrorApi(data: any): data is ErrorApi {
+    return 'error' in data;
 }

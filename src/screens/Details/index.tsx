@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { useAlert } from '../../context/alert';
-import { useAppContext } from '../../context/appContext';
+import { userContext } from '../../context/user';
 import { Product } from '../../service/ProductApi';
 import PriceApi, { Price } from '../../service/PriceApi';
 import { CardPrices } from '../../components/Cards';
@@ -29,7 +29,7 @@ export default function Details() {
     const theme = useTheme();
     const navigation = useNavigation();
     const { setMessageAlert } = useAlert();
-    const { user } = useAppContext();
+    const { user } = userContext();
     const [loading, setLoading] = useState(true);
     const [showImageViewer, setShowImageViewer] = useState<boolean>(false);
     const [showPriceSubmit, setShowPriceSubmit] = useState<boolean>(false);
@@ -139,7 +139,7 @@ export default function Details() {
                 <HeaderPrices>
                     <LineBetween>
                         <LabelListPrice>
-                            Lista de Preços
+                            Lista de Preços*
                         </LabelListPrice>
                         <LabelListCount>
                             {
@@ -154,7 +154,7 @@ export default function Details() {
                     </LineBetween>
                 </HeaderPrices>
                 <Text style={{ color: theme.colors.primary, marginVertical: 10 }}>
-                    *Os preços são informados pelos usuários, eventualmente podem não condizer com a realidade.
+                    *Os preços são informados pelos usuários, e podem não refletir a realidade.
                 </Text>
                 {
                     listPrice.length > 0 &&

@@ -1,11 +1,11 @@
 import { ThemeProvider } from 'styled-components';
 import { useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import UserProvider from './src/context/user';
 import Routes from './src/Routes';
 import themes from './src/styles/themes';
 import AlertProvider from './src/context/alert';
 import Alert from './src/components/Alert';
-import AppProvider from './src/context/appContext';
 
 export default function App() {
   const deviceTheme = useColorScheme();
@@ -13,13 +13,13 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppProvider>
+      <UserProvider>
         <StatusBar style={theme.statusBar.style} />
         <AlertProvider>
           <Routes />
           <Alert />
         </AlertProvider>
-      </AppProvider>
+      </UserProvider>
     </ThemeProvider>
   );
 }

@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react';
-import {
-    ActivityIndicator, KeyboardAvoidingView, Platform,
-    StyleSheet, TouchableOpacity
-} from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from 'styled-components';
 import { Ionicons } from '@expo/vector-icons';
-import { useAppContext } from '../../context/appContext';
+import { TextInputMask } from 'react-native-masked-text';
+import { userContext } from '../../context/user';
 import { useAlert } from '../../context/alert';
 import MarketApi from '../../service/MarketApi';
-import SelectCustom from '../SelectCustom';
 import PriceApi from '../../service/PriceApi';
+import SelectCustom from '../SelectCustom';
+import { instanceOfErrorApi } from '../../util';
 import {
     AreaButton, AreaInputPrice, ContainerButton,
     ContainerPriceSubmit, LabelButton, LabelMarket,
     LabelPrice
 } from './styles';
-import { TextInputMask } from 'react-native-masked-text';
+
 
 interface PriceSubmitProps {
     code: string;
@@ -24,10 +23,10 @@ interface PriceSubmitProps {
 
 export function PriceSubmit(props: PriceSubmitProps) {
     const { code, onClose } = props;
-    const { user: { token } } = useAppContext();
+    const { user: { token } } = userContext();
     const theme = useTheme();
     const { setMessageAlert } = useAlert();
-    const [price, setPrice] = useState<string>('');
+    const [maskPrice, setMaskPrice] = useState<string>('');
     const [loadingMarket, setLoadingMarket] = useState<boolean>(true);
     const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
     const [listMarket, setListMarket] = useState<Array<any>>([]);
@@ -39,13 +38,13 @@ export function PriceSubmit(props: PriceSubmitProps) {
     const submitPrice = async () => {
         if (loadingSubmit)
             return;
-        const formatPrice = price.replace('.', '').replace(',', '.').substring(3);
+        const price = maskPrice.replace('.', '').replace(',', '.').substring(3);
         setLoadingSubmit(true);
-        const data = await PriceApi.save(token || '', code, marketSelected.value, formatPrice);
+        const data = await PriceApi.save(token || '', code, marketSelected.value, price);
         setLoadingSubmit(false);
         onClose();
         if (data)
-            return data.error ? setMessageAlert(data.error, 'danger') : setMessageAlert('Preço atualizado!', 'primary');
+            return instanceOfErrorApi(data) ? setMessageAlert(data.error, 'danger') : setMessageAlert('Preço atualizado!', 'primary');
         return setMessageAlert('Ops! Tivemos um problema de conexão. Tente mais tarde!', 'danger');
     };
 
@@ -53,14 +52,14 @@ export function PriceSubmit(props: PriceSubmitProps) {
         setLoadingMarket(true)
         const data = await MarketApi.findAll();
         setLoadingMarket(false);
-        const listSelect = data.map((market) => {
+        const listObjSelect = data.map((market) => {
             const objSelect = {
                 name: market.nomeMercado,
                 value: market.cnpjMercado
             }
             return objSelect;
         })
-        setListMarket(listSelect);
+        setListMarket(listObjSelect);
     }
 
     useEffect(() => {
@@ -86,20 +85,17 @@ export function PriceSubmit(props: PriceSubmitProps) {
                 />
                 <AreaInputPrice>
                     <LabelPrice>Informe o preço</LabelPrice>
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'android' ? 'padding' : 'position'}
-                        enabled={true}
-                    >
-                        <TextInputMask
-                            onChangeText={(text: string) => setPrice(text)}
-                            options={{
-                                unit: 'R$ ',
-                            }}
-                            style={styles.inputPrice}
-                            type={'money'}
-                            value={price}
-                        />
-                    </KeyboardAvoidingView>
+
+                    <TextInputMask
+                        onChangeText={(text: string) => setMaskPrice(text)}
+                        options={{
+                            unit: 'R$ ',
+                        }}
+                        style={styles.inputPrice}
+                        type={'money'}
+                        value={maskPrice}
+                    />
+
                 </AreaInputPrice>
                 <AreaInputPrice>
                     <LabelMarket>Selecionar Mercado</LabelMarket>

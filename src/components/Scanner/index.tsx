@@ -87,8 +87,8 @@ export default function Scanner(props: ScannerProps) {
 
 const styles = StyleSheet.create({
     barCode: {
-        position: 'absolute',
         height: '100%',
+        position: 'absolute',
         width: '100%',
         zIndex: 1
     },

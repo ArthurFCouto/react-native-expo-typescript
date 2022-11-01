@@ -8,8 +8,8 @@ export const AreaInput = styled.View`
 
 export const LineInput = styled.View`
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     background-color: #FFFFFF;
     border-radius: 8px;
     margin-bottom: 15px;

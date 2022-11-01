@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import {
-    ActivityIndicator, Keyboard, Modal,
-    StyleSheet, TouchableOpacity, TouchableWithoutFeedback
+    ActivityIndicator, Keyboard, KeyboardAvoidingView,
+    Modal, Platform, StyleSheet, TouchableOpacity,
+    TouchableWithoutFeedback
 } from 'react-native';
 import { NavigationProp, RouterPropsParams, useNavigation } from '@react-navigation/native';
 import { useTheme } from 'styled-components';
@@ -39,42 +40,47 @@ export default function Home() {
                         size={32}
                     />
                 </TouchableOpacity>
-                <Title>Quanto tá?</Title>
-                <SubTitle>Faça cotações de preços em mercados sem sair de casa</SubTitle>
-                <ViewInput>
-                    <InputSearch
-                        placeholder='Digite um nome ou código'
-                        submit={(text) => functions.handleSearch(text)}
-                    />
-                    <TouchableOpacity onPress={() => setShowScanner(true)}>
-                        <Ionicons
-                            color={theme.colors.button}
-                            name='ios-barcode-outline'
-                            size={36}
-                            style={styles.barcode}
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={styles.container}
+                >
+                    <Title>Quanto tá?</Title>
+                    <SubTitle>Faça cotações de preços em mercados sem sair de casa</SubTitle>
+                    <ViewInput>
+                        <InputSearch
+                            placeholder='Digite um nome ou código'
+                            submit={(text) => functions.handleSearch(text)}
                         />
-                    </TouchableOpacity>
-                </ViewInput>
-                <ViewScanner>
-                    {
-                        loading ?
-                            (
-                                <ActivityIndicator
-                                    color={theme.colors.button}
-                                    size={'large'}
-                                    style={styles.activityIndicator}
-                                />
-                            ) : (
-                                <ButtonCustom
-                                    icon='ios-list-circle-outline'
-                                    onPress={() => functions.handleSearch('*')}
-                                    space={true}
-                                    style={styles.buttons}
-                                    title='Listar todos'
-                                />
-                            )
-                    }
-                </ViewScanner>
+                        <TouchableOpacity onPress={() => setShowScanner(true)}>
+                            <Ionicons
+                                color={theme.colors.button}
+                                name='ios-barcode-outline'
+                                size={36}
+                                style={styles.barcode}
+                            />
+                        </TouchableOpacity>
+                    </ViewInput>
+                    <ViewScanner>
+                        {
+                            loading ?
+                                (
+                                    <ActivityIndicator
+                                        color={theme.colors.button}
+                                        size={'large'}
+                                        style={styles.activityIndicator}
+                                    />
+                                ) : (
+                                    <ButtonCustom
+                                        icon='ios-list-circle-outline'
+                                        onPress={() => functions.handleSearch('*')}
+                                        space={true}
+                                        style={styles.buttons}
+                                        title='Listar todos'
+                                    />
+                                )
+                        }
+                    </ViewScanner>
+                </KeyboardAvoidingView>
                 <Modal
                     animationType='slide'
                     transparent
@@ -100,6 +106,9 @@ const styles = StyleSheet.create({
     buttons: {
         marginVertical: 10,
         maxWidth: '50%',
+    },
+    container: {
+        alignItems: 'center',
     },
     containerLinearGradient: {
         flex: 1,

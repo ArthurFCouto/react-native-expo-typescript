@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Modal, StyleProp, TouchableNativeFeedback, View, ViewStyle } from 'react-native';
-import { AreaOptions, ContainerOptions, ContainerSelect, Label, LabelOptions } from './styles';
+import { Modal, StyleProp, TouchableWithoutFeedback,
+    View, ViewStyle } from 'react-native';
+import { AreaOptions, ContainerOptions, ContainerSelect,
+    Label, LabelOptions } from './styles';
 
 interface OptionsProps {
     name: string;
@@ -26,21 +28,21 @@ export default function SelectCustom(props: SelectCustomProps) {
     }
 
     const Options = (props: OptionsProps) => (
-        <TouchableNativeFeedback onPress={() => handleOptionsAction(props)}>
+        <TouchableWithoutFeedback onPress={() => handleOptionsAction(props)}>
             <ContainerOptions>
                 <LabelOptions
                     ellipsizeMode='tail'
-                    numberOfLines={2}
+                    numberOfLines={1}
                 >
                     {props.name}
                 </LabelOptions>
             </ContainerOptions>
-        </TouchableNativeFeedback>
+        </TouchableWithoutFeedback>
     )
 
     return (
         <>
-            <TouchableNativeFeedback onPress={() => setShowOptions(true)}>
+            <TouchableWithoutFeedback onPress={() => setShowOptions(true)}>
                 <View style={style}>
                     <Label
                         ellipsizeMode='tail'
@@ -49,12 +51,12 @@ export default function SelectCustom(props: SelectCustomProps) {
                         {defaultLabel}
                     </Label>
                 </View>
-            </TouchableNativeFeedback>
+            </TouchableWithoutFeedback>
             <Modal
                 transparent
                 visible={showOptions}
             >
-                <TouchableNativeFeedback onPress={() => setShowOptions(false)}>
+                <TouchableWithoutFeedback onPress={() => setShowOptions(false)}>
                     <ContainerSelect>
                         <AreaOptions>
                             {
@@ -69,7 +71,7 @@ export default function SelectCustom(props: SelectCustomProps) {
                             }
                         </AreaOptions>
                     </ContainerSelect>
-                </TouchableNativeFeedback>
+                </TouchableWithoutFeedback>
             </Modal>
         </>
     )

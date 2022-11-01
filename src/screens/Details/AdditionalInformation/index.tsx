@@ -38,7 +38,7 @@ export default function AdditionalInformation(props: PropsAdditionalInformation)
                     Informações adicionais
                 </LabelAddInformation>
                 <Ionicons
-                    name={showContainer ? 'md-eye-off' : 'md-eye'}
+                    name={showContainer ? 'md-eye' : 'md-eye-off'}
                     size={18}
                     color={theme.colors.primary}
                 />

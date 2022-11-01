@@ -8,17 +8,17 @@ export const ContainerSelect = styled.View`
 `;
 
 export const AreaOptions = styled.ScrollView`
-    width: 100%;
     max-height: 50%;
     padding: 0px 10px;
+    width: 100%;
 `;
 
 export const ContainerOptions = styled.View`
-    width: 100%;
     background-color: ${(props) => props.theme.colors.primary};
     border-radius: 8px;
     margin: 5px 0px;
     padding: 20px 10px;
+    width: 100%;
 `;
 
 export const Label = styled.Text`

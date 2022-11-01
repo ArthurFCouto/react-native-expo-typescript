@@ -7,7 +7,7 @@ import { useTheme } from 'styled-components';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useAlert } from '../../context/alert';
-import { useAppContext } from '../../context/appContext';
+import { userContext } from '../../context/user';
 import UserApi from '../../service/UserApi';
 import ButtonCustom from '../../components/ButtonCustom';
 import { SubTitle, Title } from '../../components/Styles';
@@ -15,17 +15,18 @@ import {
     AreaInput, InputEmail,
     InputPassword, LineInput
 } from './styles';
+import { instanceOfErrorApi } from '../../util';
 
 export default function Account() {
-    const { resetUser, setUser, user } = useAppContext();
-    const { logged, usuario: { nomeUsuario } } = user;
     const theme = useTheme();
     const { setMessageAlert } = useAlert();
+    const { resetUser, setUser, user } = userContext();
+    const { logged, usuario: { nomeUsuario } } = user;
     const passwordRef = useRef<TextInput>(null);
-    const [email, setEmail] = useState<string>('');
+    const [email, setEmail] = useState<string>(user.usuario.emailUsuario);
     const [password, setPassword] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleLogin = async () => {
         if (email.trim().length === 0 || password.trim().length === 0)
@@ -33,9 +34,8 @@ export default function Account() {
         setLoading(true);
         const data = await UserApi.login(email, password);
         setLoading(false);
-        if (data) {
-            return data.error ? setMessageAlert(data.error, 'danger') : setUser(data);
-        }
+        if (data)
+            return instanceOfErrorApi(data) ? setMessageAlert(data.error, 'danger') : setUser(data);
         setMessageAlert('Ops! Tivemos um problema de conexão. Tente mais tarde!', 'danger');
     }
 
@@ -54,7 +54,7 @@ export default function Account() {
         <ButtonCustom
             icon='log-in'
             loading={loading}
-            onPress={handleLogin}
+            onPress={()=> handleLogin()}
             title='Login'
             style={{ width: '50%' }}
         />
@@ -101,7 +101,6 @@ export default function Account() {
                             placeholderTextColor={theme.colors.gray}
                             ref={passwordRef}
                             secureTextEntry={!showPassword}
-                            value={password}
                         />
                         <TouchableWithoutFeedback onPress={() => setShowPassword(!showPassword)}>
                             <Ionicons
